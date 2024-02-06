@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 @RestController
 public class CheckProductAvailController {
     @GetMapping("/inventory/v1/products/{productId}/availability")
-    public ResponseEntity<DefaultResponse<CheckProductAvailResponsePayload>> addProduct(){
+    public ResponseEntity<DefaultResponse<CheckProductAvailResponsePayload>> checkProductAvail(){
         // dummy
         DefaultResponse<CheckProductAvailResponsePayload> response = DefaultResponse.<CheckProductAvailResponsePayload>builder()
                 .traceId("abc")
