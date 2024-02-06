@@ -9,6 +9,13 @@ import java.util.List;
 
 @Repository
 public class ProductDefaultRepository implements ProductRepository{
+
+    private final String SQL_GET_SEQ_PRODUCT_ID_NEXTVAL = "select lpad(nextval('seq_product_id'), 6, '0') from dual";
+
+    private final String SQL_INSERT_PRODUCT = "insert into product values (?, ?, ?, ?)";
+
+    private final String SQL_UPDATE_QUANTITY = "update product set quantity=quantity+? where id=?";
+
     private final String SQL_GET_QUANTITY = "select quantity from product where id=?";
 
     private JdbcTemplate jdbcTemplate;
@@ -19,13 +26,19 @@ public class ProductDefaultRepository implements ProductRepository{
     }
 
     @Override
-    public int insertProduct(AddProductDto addProductDto) {
-        return 0;
+    public String insertProduct(AddProductDto addProductDto) {
+        String productId = jdbcTemplate.queryForObject(SQL_GET_SEQ_PRODUCT_ID_NEXTVAL, String.class);
+
+        jdbcTemplate.update(SQL_INSERT_PRODUCT, productId, addProductDto.getName(), addProductDto.getPrice(), addProductDto.getQuantity());
+
+        return productId;
     }
 
     @Override
     public int updateQuantity(String productId, int quantityDelta) {
-        return 0;
+        int rowsUpdate = jdbcTemplate.update(SQL_UPDATE_QUANTITY, quantityDelta, productId);
+
+        return rowsUpdate;
     }
 
     @Override
