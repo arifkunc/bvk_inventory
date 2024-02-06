@@ -28,23 +28,23 @@ public class UpdateProductQuantityController {
     public ResponseEntity<DefaultResponse<SuccessResponsePayload>> updateProductQuantity(@PathParam("productId") String productId,
             @RequestBody UpdateProductQuantityRequest request){
 
-        execute(productId, request);
+        SuccessResponsePayload responsePayload = execute(productId, request);
 
         DefaultResponse<SuccessResponsePayload> response = DefaultResponse.<SuccessResponsePayload>builder()
                 .traceId(request.getTraceId())
                 .time(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(OffsetDateTime.now()))
-                .data(
-                        SuccessResponsePayload.builder()
-                                .status("success")
-                                .message("process is successfully done")
-                                .build()
-                )
+                .data(responsePayload)
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    private void execute(String productId, UpdateProductQuantityRequest request){
+    private SuccessResponsePayload execute(String productId, UpdateProductQuantityRequest request){
         productService.updateProductQuantity(productId, request.getQuantityDelta());
+
+        return SuccessResponsePayload.builder()
+                .status("success")
+                .message("process is successfully done")
+                .build();
     }
 }

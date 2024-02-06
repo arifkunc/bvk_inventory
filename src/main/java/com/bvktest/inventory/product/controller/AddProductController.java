@@ -26,23 +26,18 @@ public class AddProductController {
 
     @PostMapping("/inventory/v1/products")
     public ResponseEntity<DefaultResponse<SuccessResponsePayload>> addProduct(@RequestBody AddProductRequest request){
-        execute(request);
+        SuccessResponsePayload responsePayload = execute(request);
 
         DefaultResponse<SuccessResponsePayload> response = DefaultResponse.<SuccessResponsePayload>builder()
                 .traceId(request.getTraceId())
                 .time(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(OffsetDateTime.now()))
-                .data(
-                        SuccessResponsePayload.builder()
-                                .status("success")
-                                .message("process is successfully done")
-                                .build()
-                )
+                .data(responsePayload)
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    private void execute(AddProductRequest request){
+    private SuccessResponsePayload execute(AddProductRequest request){
         AddProductDto addProductDto = AddProductDto.builder()
                 .name(request.getName())
                 .price(request.getPrice())
@@ -50,5 +45,10 @@ public class AddProductController {
                 .build();
 
         productService.addProduct(addProductDto);
+
+        return SuccessResponsePayload.builder()
+                .status("success")
+                .message("process is successfully done")
+                .build();
     }
 }
