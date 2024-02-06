@@ -4,6 +4,6 @@ import com.bvktest.inventory.product.object.AddProductDto;
 
 public interface ProductService {
     void addProduct(AddProductDto addProductDto);
-    int getProductQuantity(String productId);
+    Integer getProductQuantity(String productId);
     void updateProductQuantity(String productId, int quantityDelta);
 }

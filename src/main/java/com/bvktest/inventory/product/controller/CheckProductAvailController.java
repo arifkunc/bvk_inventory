@@ -3,11 +3,11 @@ package com.bvktest.inventory.product.controller;
 import com.bvktest.inventory.common.model.DefaultResponse;
 import com.bvktest.inventory.product.model.CheckProductAvailResponsePayload;
 import com.bvktest.inventory.product.service.ProductService;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,7 +26,7 @@ public class CheckProductAvailController {
 
     @GetMapping("/inventory/v1/products/{productId}/availability")
     public ResponseEntity<DefaultResponse<CheckProductAvailResponsePayload>> checkProductAvail(@RequestParam Map<String, String> paramMap,
-                                                                                               @PathParam("productId") String productId){
+                                                                                               @PathVariable("productId") String productId){
         String traceId = paramMap.get("traceId");
         CheckProductAvailResponsePayload responsePayload = execute(productId);
 
@@ -40,7 +40,7 @@ public class CheckProductAvailController {
     }
 
     private CheckProductAvailResponsePayload execute(String productId){
-        int quantity = productService.getProductQuantity(productId);
+        Integer quantity = productService.getProductQuantity(productId);
 
         return CheckProductAvailResponsePayload.builder()
                 .quantity(quantity)
