@@ -1,5 +1,6 @@
 package com.bvktest.inventory.product.controller;
 
+import com.bvktest.inventory.common.exception.InvalidRequestException;
 import com.bvktest.inventory.common.model.DefaultResponse;
 import com.bvktest.inventory.product.model.AddProductRequest;
 import com.bvktest.inventory.product.model.AddProductResponsePayload;
@@ -8,6 +9,7 @@ import com.bvktest.inventory.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +28,7 @@ public class AddProductController {
 
     @PostMapping("/inventory/v1/products")
     public ResponseEntity<DefaultResponse<AddProductResponsePayload>> addProduct(@RequestBody AddProductRequest request){
+        validateRequest(request);
         AddProductResponsePayload responsePayload = execute(request);
 
         DefaultResponse<AddProductResponsePayload> response = DefaultResponse.<AddProductResponsePayload>builder()
@@ -35,6 +38,21 @@ public class AddProductController {
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    private void validateRequest(AddProductRequest request){
+        if(!StringUtils.hasText(request.getTraceId())){
+            throw new InvalidRequestException("Missing field. Param traceId is required.");
+        }
+        if(!StringUtils.hasText(request.getName())){
+            throw new InvalidRequestException("Missing field. Param name is required.");
+        }
+        if(request.getPrice() == null){
+            throw new InvalidRequestException("Missing field. Param price is required.");
+        }
+        if(request.getQuantity() == null){
+            throw new InvalidRequestException("Missing field. Param quantity is required.");
+        }
     }
 
     private AddProductResponsePayload execute(AddProductRequest request){
